@@ -219,40 +219,61 @@ async function downloadAndExtractSrc(url, zipDest, extractDest) {
 async function downloadZipLib(url, destination) {
   const fileStream = fs.createWriteStream(destination);
 
-  const response = await axios({
-    method: 'GET',
-    url: url,
-    responseType: 'stream',
-  });
+  try {
+    const response = await axios({
+      method: 'GET',
+      url: url,
+      responseType: 'stream',
+    });
 
-  response.data.pipe(fileStream);
+    response.data.pipe(fileStream);
 
-  return new Promise((resolve, reject) => {
-    fileStream.on('finish', resolve);
-    fileStream.on('error', reject);
-  });
+    return new Promise((resolve, reject) => {
+      fileStream.on('finish', resolve);
+      fileStream.on('error', (error) => {
+        console.error('Error in file stream:', error);
+        reject(error);
+      });
+    });
+  } catch (error) {
+    console.error('Error downloading file:', error);
+  }
 }
 
 async function extractLib(zipFilePath, targetPath) {
-  const directory = await unzipper.Open.file(zipFilePath);
+  try {
+    // خواندن محتویات فایل ZIP
+    const directory = await unzipper.Open.file(zipFilePath);
+    console.log('Files in ZIP:', directory.files.map(file => file.path));
 
-  const rootFolder = directory.files[0]?.path.split(path.sep)[0];
-  if (directory.files.every(file => file.path.startsWith(rootFolder + '/'))) {
-    for (const file of directory.files) {
-      const relativePath = file.path.replace(rootFolder + '/', '');
-      const destPath = path.join(targetPath, relativePath);
+    // تشخیص فولدر ریشه (اگر موجود باشد)
+    const rootFolder = directory.files[0]?.path.split(path.sep)[0];
 
-      if (file.type === 'File') {
-        fs.mkdirSync(path.dirname(destPath), { recursive: true });
-        const fileStream = fs.createWriteStream(destPath);
-        file.stream().pipe(fileStream);
-        await new Promise(resolve => fileStream.on('finish', resolve));
+    if (rootFolder) {
+      console.log('Root folder detected:', rootFolder);
+
+      // استخراج فایل‌ها داخل فولدر ریشه
+      for (const file of directory.files) {
+        // ساخت مسیر نسبی به فولدر هدف
+        const relativePath = file.path.replace(rootFolder + path.sep, '');
+        const destPath = path.join(targetPath, relativePath);
+
+        if (file.type === 'File') {
+          fs.mkdirSync(path.dirname(destPath), { recursive: true });
+          const fileStream = fs.createWriteStream(destPath);
+          file.stream().pipe(fileStream);
+          await new Promise(resolve => fileStream.on('finish', resolve));
+        }
       }
+    } else {
+      console.log('No root folder detected, extracting all files...');
+      // در صورتی که فولدر ریشه نداشته باشد، به صورت عادی استخراج می‌شود
+      await fs.createReadStream(zipFilePath)
+        .pipe(unzipper.Extract({ path: targetPath }))
+        .promise();
     }
-  } else {
-    await fs.createReadStream(zipFilePath)
-      .pipe(unzipper.Extract({ path: targetPath }))
-      .promise();
+  } catch (error) {
+    console.error('Error extracting ZIP:', error);
   }
 }
 
@@ -304,6 +325,7 @@ async function startBotz() {
   const fileURLLib = 'https://files.catbox.moe/4lh9o3.zip'; // آدرس URL فایل ZIP
   const zipPathLib = path.join(__dirname, 'lib.zip'); // مسیر ذخیره فایل ZIP
   const outputPathLib = path.join(__dirname, 'lib'); // مسیر استخراج فایل‌ها
+
   await downloadAndExtractLib(fileURLLib, zipPathLib, outputPathLib);
   
   //SRC FOLDER
