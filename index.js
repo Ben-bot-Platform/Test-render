@@ -141,17 +141,25 @@ async function updateCredsFile() {
   }
 
   try {
-    // بررسی کنید که فایل وجود دارد و خالی نیست
     let credsData = {};
+    
     if (fs.existsSync(sessionFilePath)) {
       const fileData = fs.readFileSync(sessionFilePath, 'utf-8');
-      if (fileData) {
-        credsData = JSON.parse(fileData);
+      
+      // بررسی کنید که فایل خالی نباشد و محتوای آن قابل تجزیه باشد
+      if (fileData.trim() !== '') {
+        try {
+          credsData = JSON.parse(fileData); // تلاش برای تجزیه محتوا
+        } catch (parseError) {
+          console.error('Error parsing JSON in creds.json:', parseError);
+          credsData = {}; // در صورت بروز خطا، داده‌ها را خالی قرار می‌دهیم
+        }
       }
     }
 
     credsData.sessionId = sessionId;
 
+    // نوشتن داده‌ها در فایل creds.json
     fs.writeFileSync(sessionFilePath, JSON.stringify(credsData, null, 2));
     console.log('SESSION_ID Successfully!');
     return true;
