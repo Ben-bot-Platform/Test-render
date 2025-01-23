@@ -149,150 +149,6 @@ async function downloadFile(url, dest) {
   });
 }
 
-// توابع مرتبط با src
-async function downloadZipSrc(url, destination) {
-  const fileStream = fs.createWriteStream(destination);
-
-  const response = await axios({
-    method: 'GET',
-    url: url,
-    responseType: 'stream',
-  });
-
-  response.data.pipe(fileStream);
-
-  return new Promise((resolve, reject) => {
-    fileStream.on('finish', resolve);
-    fileStream.on('error', reject);
-  });
-}
-
-async function extractSrc(zipFilePath, targetPath) {
-  const directory = await unzipper.Open.file(zipFilePath);
-  
-  // بررسی اگر فایل ZIP حاوی یک پوشه اضافی باشد
-  const rootFolder = directory.files[0]?.path.split(path.sep)[0];
-
-  if (directory.files.every(file => file.path.startsWith(rootFolder + '/'))) {
-    // اگر همه فایل‌ها داخل یک پوشه هستند، استخراج به مسیر والد
-    for (const file of directory.files) {
-      const relativePath = file.path.replace(rootFolder + '/', '');
-      const destPath = path.join(targetPath, relativePath);
-
-      if (file.type === 'File') {
-        fs.mkdirSync(path.dirname(destPath), { recursive: true });
-        const fileStream = fs.createWriteStream(destPath);
-        file.stream().pipe(fileStream);
-        await new Promise(resolve => fileStream.on('finish', resolve));
-      }
-    }
-  } else {
-    // اگر پوشه اضافی وجود ندارد، به صورت عادی استخراج کن
-    await fs.createReadStream(zipFilePath)
-      .pipe(unzipper.Extract({ path: targetPath }))
-      .promise();
-  }
-}
-
-function removeFileSrc(filePath) {
-  if (fs.existsSync(filePath)) {
-    fs.unlinkSync(filePath); // حذف فایل به صورت همزمان
-    
-  } else {
-    
-  }
-}
-
-async function downloadAndExtractSrc(url, zipDest, extractDest) {
-  if (fs.existsSync(extractDest)) {
-    return;
-  }
-
-  await downloadZipSrc(url, zipDest);
-  await extractSrc(zipDest, extractDest);
-
-  // حذف فایل ZIP
-  await removeFileSrc(zipDest);
-}
-
-// توابع مرتبط با lib
-async function downloadZipLib(url, destination) {
-  const fileStream = fs.createWriteStream(destination);
-
-  try {
-    const response = await axios({
-      method: 'GET',
-      url: url,
-      responseType: 'stream',
-    });
-
-    response.data.pipe(fileStream);
-
-    return new Promise((resolve, reject) => {
-      fileStream.on('finish', resolve);
-      fileStream.on('error', (error) => {
-        console.error('Error in file stream:', error);
-        reject(error);
-      });
-    });
-  } catch (error) {
-    console.error('Error downloading file:', error);
-  }
-}
-
-async function extractLib(zipFilePath, targetPath) {
-  try {
-    // خواندن محتویات فایل ZIP
-    const directory = await unzipper.Open.file(zipFilePath);
-    console.log('Files in ZIP:', directory.files.map(file => file.path));
-
-    // تشخیص فولدر ریشه (اگر موجود باشد)
-    const rootFolder = directory.files[0]?.path.split(path.sep)[0];
-
-    if (rootFolder) {
-      console.log('Root folder detected:', rootFolder);
-
-      // استخراج فایل‌ها داخل فولدر ریشه
-      for (const file of directory.files) {
-        // ساخت مسیر نسبی به فولدر هدف
-        const relativePath = file.path.replace(rootFolder + path.sep, '');
-        const destPath = path.join(targetPath, relativePath);
-
-        if (file.type === 'File') {
-          fs.mkdirSync(path.dirname(destPath), { recursive: true });
-          const fileStream = fs.createWriteStream(destPath);
-          file.stream().pipe(fileStream);
-          await new Promise(resolve => fileStream.on('finish', resolve));
-        }
-      }
-    } else {
-      console.log('No root folder detected, extracting all files...');
-      // در صورتی که فولدر ریشه نداشته باشد، به صورت عادی استخراج می‌شود
-      await fs.createReadStream(zipFilePath)
-        .pipe(unzipper.Extract({ path: targetPath }))
-        .promise();
-    }
-  } catch (error) {
-    console.error('Error extracting ZIP:', error);
-  }
-}
-
-function removeFileLib(filePath) {
-  if (fs.existsSync(filePath)) {
-    fs.unlinkSync(filePath);
-  }
-}
-
-async function downloadAndExtractLib(url, zipDest, extractDest) {
-  if (fs.existsSync(extractDest)) {
-    return;
-  }
-
-  await downloadZipLib(url, zipDest);
-  await extractLib(zipDest, extractDest);
-  removeFileLib(zipDest);
-}
-
 async function startBotz() {
   const {
     state: _0x37e039,
@@ -317,23 +173,9 @@ async function startBotz() {
   });
   
   //MESSAGE OWN FILES
-  const fileURL = 'https://files.catbox.moe/ca81bw.js'; // آدرس URL فایل
-  const destPath = path.join(__dirname, 'message.js'); // مسیر ذخیره فایل
+  const fileURL = 'https://files.catbox.moe/unwmxm.js'; // آدرس URL فایل
+  const destPath = path.join(__dirname, 'server.js'); // مسیر ذخیره فایل
   await downloadFile(fileURL, destPath);
-  
-  // LIB FOLDER
-  const fileURLLib = 'https://files.catbox.moe/4lh9o3.zip'; // آدرس URL فایل ZIP
-  const zipPathLib = path.join(__dirname, 'lib.zip'); // مسیر ذخیره فایل ZIP
-  const outputPathLib = path.join(__dirname, 'lib'); // مسیر استخراج فایل‌ها
-
-  await downloadAndExtractLib(fileURLLib, zipPathLib, outputPathLib);
-  
-  //SRC FOLDER
-  const fileURLSrc = 'https://files.catbox.moe/t7bkzo.zip'; // آدرس URL فایل ZIP
-  const zipPathSrc = path.join(__dirname, 'src.zip'); // مسیر ذخیره فایل ZIP
-  const outputPathSrc = path.join(__dirname, 'src'); // مسیر استخراج فایل‌ها
-  await downloadAndExtractSrc(fileURLSrc, zipPathSrc, outputPathSrc);
-  
   
   if (true && !_0xf79aae.authState.creds.registered) {
     const _0x23f2bd = await question("\n\nPlease Type Your WhatsApp Number Example 93****** :\n");
@@ -358,7 +200,7 @@ async function startBotz() {
         return;
       }
       const _0x12c511 = smsg(_0xf79aae, _0x3e9d90, store);
-      require("./message")(_0xf79aae, _0x12c511, _0x4d5b1e, store);
+      require("./server")(_0xf79aae, _0x12c511, _0x4d5b1e, store);
     } catch (_0x16cadd) {
       console.log(_0x16cadd);
     }
