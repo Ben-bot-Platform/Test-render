@@ -10,8 +10,8 @@ global.nomerowner = ["+93744215959"]
 //CHANNEL JID
 global.channelChatId = "0029Vasu3qP9RZAUkVkvSv32";
 //WATERMARK BOT NAME AND STICKER
-global.packname = process.env.OWNER;
-global.author = '𝑩𝑬𝑵_𝑩𝑶𝑻'
+global.packname = process.env.OWNER_NAME;
+global.author = process.env.BOT_NAME;
 //SOON
 global.apilinode = '' // apikey vps account linode
 global.apitokendo = ''
