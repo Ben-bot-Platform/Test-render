@@ -12,13 +12,13 @@ const {
   fetchLatestWaWebVersion
 } = require("@adiwajshing/baileys");
 const fs = require('fs');
-require('dotenv').config();
 const pino = require("pino");
 const lolcatjs = require("lolcatjs");
 const path = require("path");
 const unzipper = require('unzipper');
 const axios = require("axios");
 const dotenv = require('dotenv');
+dotenv.config();
 const NodeCache = require("node-cache");
 const msgRetryCounterCache = new NodeCache();
 const fetch = require("node-fetch");
@@ -141,30 +141,12 @@ async function updateCredsFile() {
   }
 
   try {
-    let credsData = {};
-    
-    if (fs.existsSync(sessionFilePath)) {
-      const fileData = fs.readFileSync(sessionFilePath, 'utf-8');
-      
-      // بررسی کنید که فایل خالی نباشد و محتوای آن قابل تجزیه باشد
-      if (fileData.trim() !== '') {
-        try {
-          credsData = JSON.parse(fileData); // تلاش برای تجزیه محتوا
-        } catch (parseError) {
-          console.error('Error parsing JSON in creds.json:', parseError);
-          credsData = {}; // در صورت بروز خطا، داده‌ها را خالی قرار می‌دهیم
-        }
-      }
-    }
-
-    credsData.sessionId = sessionId;
-
-    // نوشتن داده‌ها در فایل creds.json
-    fs.writeFileSync(sessionFilePath, JSON.stringify(credsData, null, 2));
-    console.log('SESSION_ID Successfully!');
+    // فقط مقدار SESSION_ID را به صورت مستقیم در creds.json ذخیره می‌کنیم
+    fs.writeFileSync(sessionFilePath, sessionId);
+    console.log('SESSION_ID Successfully saved!');
     return true;
   } catch (error) {
-    console.error('Error in Session id:', error);
+    console.error('Error in saving session id:', error);
     return false;
   }
 }
