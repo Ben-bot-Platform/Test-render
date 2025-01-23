@@ -7,9 +7,9 @@ global.owner = process.env.OWNER_NAME;
 global.nomerowner = process.env.OWNER_NUMBER;
 global.packname = process.env.BOT_NAME;
 global.author = process.env.OWNER_NAME;
-global.channelChatId = "0029Vasu3qP9RZAUkVkvSv32";
-global.bench = 'https://whatsapp.com/channel/0029Vasu3qP9RZAUkVkvSv32'
-global.bensc = 'https://github.com/TraderAn-King/Ben-bot' 
+global.channelChatId = process.env.CHANNEL_JID;
+global.bench = process.env.BEN_CHANNEL;
+global.benrepo = process.env.BEN_REPO;
 
 //AUTO FUNCTIONER DONT CHANGE IT
 global.ANTIDELETE = false;
