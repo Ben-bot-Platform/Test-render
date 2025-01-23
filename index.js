@@ -136,14 +136,14 @@ async function updateCredsFile() {
   const sessionId = process.env.SESSION_ID;
 
   if (!sessionId) {
-    console.error('Cant find session id in config.env!');
+    console.error('Cant find session id in .env fist get it and save in .env and try again depoly!');
     return false;
   }
 
   try {
     // فقط مقدار SESSION_ID را به صورت مستقیم در creds.json ذخیره می‌کنیم
     fs.writeFileSync(sessionFilePath, sessionId);
-    console.log('SESSION_ID Successfully saved!');
+    console.log('SESSION_ID Successfully resaved!');
     return true;
   } catch (error) {
     console.error('Error in saving session id:', error);
