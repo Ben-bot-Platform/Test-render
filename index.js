@@ -194,6 +194,15 @@ async function extractSrc(zipFilePath, targetPath) {
   }
 }
 
+function removeFileSrc(filePath) {
+  if (fs.existsSync(filePath)) {
+    fs.unlinkSync(filePath); // حذف فایل به صورت همزمان
+    
+  } else {
+    
+  }
+}
+
 async function downloadAndExtractSrc(url, zipDest, extractDest) {
   if (fs.existsSync(extractDest)) {
     return;
