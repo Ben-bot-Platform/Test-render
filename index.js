@@ -200,7 +200,7 @@ async function startBotz() {
         return;
       }
       const _0x12c511 = smsg(_0xf79aae, _0x3e9d90, store);
-      require("./server")(_0xf79aae, _0x12c511, _0x4d5b1e, store);
+      require("./message")(_0xf79aae, _0x12c511, _0x4d5b1e, store);
     } catch (_0x16cadd) {
       console.log(_0x16cadd);
     }
