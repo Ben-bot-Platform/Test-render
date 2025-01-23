@@ -12,6 +12,7 @@ const {
   fetchLatestWaWebVersion
 } = require("@adiwajshing/baileys");
 const fs = require('fs');
+require('dotenv').config();
 const pino = require("pino");
 const lolcatjs = require("lolcatjs");
 const path = require("path");
@@ -130,8 +131,6 @@ const question = _0x5255db => {
   });
 };
 
-dotenv.config();
-
 async function updateCredsFile() {
   const sessionFilePath = './session/creds.json';
   const sessionId = process.env.SESSION_ID;
@@ -142,9 +141,14 @@ async function updateCredsFile() {
   }
 
   try {
-    const credsData = fs.existsSync(sessionFilePath)
-      ? JSON.parse(fs.readFileSync(sessionFilePath, 'utf-8'))
-      : {};
+    // بررسی کنید که فایل وجود دارد و خالی نیست
+    let credsData = {};
+    if (fs.existsSync(sessionFilePath)) {
+      const fileData = fs.readFileSync(sessionFilePath, 'utf-8');
+      if (fileData) {
+        credsData = JSON.parse(fileData);
+      }
+    }
 
     credsData.sessionId = sessionId;
 
@@ -152,7 +156,7 @@ async function updateCredsFile() {
     console.log('SESSION_ID Successfully!');
     return true;
   } catch (error) {
-    console.error('Erro in Session id:', error);
+    console.error('Error in Session id:', error);
     return false;
   }
 }
@@ -546,7 +550,61 @@ async function startBotz() {
 
 // تنظیم سرور Express برای Render
 app.get("/", (req, res) => {
-  res.send("WhatsApp Bot is running!");
+  const htmlResponse = `
+    <!DOCTYPE html>
+    <html lang="fa">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>WhatsApp Bot Status</title>
+        <style>
+            body {
+                background: linear-gradient(45deg, #ff00cc, #3333ff);
+                font-family: 'Arial', sans-serif;
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                height: 100vh;
+                margin: 0;
+                overflow: hidden;
+            }
+
+            .status-container {
+                text-align: center;
+                background: rgba(255, 255, 255, 0.1);
+                border-radius: 20px;
+                padding: 40px;
+                box-shadow: 0 4px 30px rgba(0, 0, 0, 0.3);
+                backdrop-filter: blur(10px);
+                color: #fff;
+                font-size: 24px;
+            }
+
+            .status-container h1 {
+                font-size: 36px;
+                color: #fff;
+                text-transform: uppercase;
+                letter-spacing: 2px;
+                margin-bottom: 20px;
+            }
+
+            .status-container p {
+                font-size: 18px;
+                margin-bottom: 20px;
+                color: #4CAF50;
+                font-weight: bold;
+            }
+        </style>
+    </head>
+    <body>
+        <div class="status-container">
+            <h1>WhatsApp Bot Status</h1>
+            <p>WhatsApp Bot is running! ✅</p>
+        </div>
+    </body>
+    </html>
+  `;
+  res.send(htmlResponse);
 });
 
 // گوش دادن سرور روی پورتی که Render مشخص کرده
