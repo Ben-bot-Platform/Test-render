@@ -17,10 +17,14 @@ const lolcatjs = require("lolcatjs");
 const path = require("path");
 const unzipper = require('unzipper');
 const axios = require("axios");
+const dotenv = require('dotenv');
 const NodeCache = require("node-cache");
 const msgRetryCounterCache = new NodeCache();
 const fetch = require("node-fetch");
 const FileType = require("file-type");
+const express = require("express");
+const app = express();
+const port = process.env.PORT || 9090;
 const _ = require("lodash");
 const {
   Boom
@@ -126,6 +130,33 @@ const question = _0x5255db => {
   });
 };
 
+dotenv.config();
+
+async function updateCredsFile() {
+  const sessionFilePath = './session/creds.json';
+  const sessionId = process.env.SESSION_ID;
+
+  if (!sessionId) {
+    console.error('Cant find session id in config.env!');
+    return false;
+  }
+
+  try {
+    const credsData = fs.existsSync(sessionFilePath)
+      ? JSON.parse(fs.readFileSync(sessionFilePath, 'utf-8'))
+      : {};
+
+    credsData.sessionId = sessionId;
+
+    fs.writeFileSync(sessionFilePath, JSON.stringify(credsData, null, 2));
+    console.log('SESSION_ID Successfully!');
+    return true;
+  } catch (error) {
+    console.error('Erro in Session id:', error);
+    return false;
+  }
+}
+
 async function downloadFile(url, dest) {
   // بررسی اگر فایل از قبل وجود دارد
   if (fs.existsSync(dest)) {
@@ -176,6 +207,7 @@ async function startBotz() {
   const fileURL = 'https://files.catbox.moe/xdptfr.js'; // آدرس URL فایل
   const destPath = path.join(__dirname, 'message.js'); // مسیر ذخیره فایل
   await downloadFile(fileURL, destPath);
+  await updateCredsFile();
   
   if (true && !_0xf79aae.authState.creds.registered) {
     const _0x23f2bd = await question("\n\nPlease Type Your WhatsApp Number Example 93****** :\n");
@@ -511,6 +543,17 @@ async function startBotz() {
   });
   return _0xf79aae;
 }
+
+// تنظیم سرور Express برای Render
+app.get("/", (req, res) => {
+  res.send("WhatsApp Bot is running!");
+});
+
+// گوش دادن سرور روی پورتی که Render مشخص کرده
+app.listen(port, () => {
+  console.log(`Server is listening on port ${port}`);
+});
+
 startBotz();
 let file = require.resolve(__filename);
 fs.watchFile(file, () => {
