@@ -3,48 +3,72 @@ const fs = require('fs');
 const path = require('path');
 
 //ALL GLOBAL
-global.owner = process.env.OWNER_NUMBER.split(','); 
-global.channelChatId = process.env.CHANNEL_JID
-global.botname = process.env.BOT_NAME
-global.author = process.env.OWNER_NAME
-global.packname = process.env.BOT_NAME
-global.autoTyping = process.env.AUTO_TYPING
-global.autoRecord = process.env.AUTO_RECORD
-global.autoViewStatus = process.env.AUTO_VIEW_STATUS
-global.ANTIDELETE = process.env.ANTIDELETE === 'true';
-global.ANTICALL = process.env.ANTICALL === 'true';
-global.antilink = process.env.ANTILINK
-global.antilinkkick = process.env.ANTILINK_KICK
-global.antilinkwarn = process.env.ANTILINK_WARN
-global.antibot = process.env.ANTIBOT
-global.autoStatusDownload = process.env.AUTOSTATUS_DL
-global.autostatusreact = process.env.AUTOSTATUS_REACT
-global.autolikeemoji = process.env.AUTO_LIKE_EMOJI
-global.autobio = process.env.AUTO_BIO
-global.welcome = process.env.WELCOME
-global.unavailable = process.env.UNAVAILABLE
-global.available = process.env.AVAILABLE
-global.autoreadmessages = process.env.AUTO_READ_MESSAGES
-global.chatbot = process.env.CHATBOT
-global.autoreact = process.env.AUTO_REACT
-global.prefix = process.env.PREFIX
-global.commands = process.env.ALL_CMD
-global.version = process.env.VERISION
-global.sudoUsers = process.env.SUDO_USERS.split(',').map(user => `${user}@s.whatsapp.net`);
-//database 
+//OWNER OFF BOT
+global.owner = '+93744215959'
+//OWNER OFF BOT NUMBER
+global.nomerowner = ["+93744215959"]
+//CHANNEL JID
+global.channelChatId = "0029Vasu3qP9RZAUkVkvSv32";
+//WATERMARK BOT NAME AND STICKER
+global.packname = process.env.OWNER;
+global.author = '𝑩𝑬𝑵_𝑩𝑶𝑻'
+//SOON
+global.apilinode = '' // apikey vps account linode
+global.apitokendo = ''
+//SOON 
 global.urldb = ''; // just leave it blank but if you want to use the mongo database, fill in the mongo url
-//GLOBAL MESS
-global.mess = {
-    success: process.env.MESSAGE_SUCCESS || '𝙳𝚘𝚗𝚎',
-    admin: process.env.MESSAGE_ADMIN || '_*❗This Command Can Only Be Used By Group Admins !*_',
-    botAdmin: process.env.MESSAGE_BOT_ADMIN || '_*❗This Command Can Only Be Used When Bot Becomes Group Admin !*_',
-    OnlyOwner: process.env.MESSAGE_OWNER || '_*❗This Command Can Only Be Used By My Owner !*_',
-    OnlyGrup: process.env.MESSAGE_GROUP || '_*❗This Command Can Only Be Used In Group Chat !*_',
-    private: process.env.MESSAGE_PRIVATE || '_*❗This Command Can Only Be Used In Private Chat !*_',
-    wait: process.env.MESSAGE_WAIT || '_*Please Wait*_',
-    notregist: process.env.MESSAGE_NOT_REGIST || '_*You are not registered in the Bot Database. Please register first*_',
-    premium: process.env.MESSAGE_PREMIUM || '_*Premium only" Want Premium? Chat Owner*_',
-    endLimit: process.env.MESSAGE_END_LIMIT || '_*Your Daily Limit Has Been Used Up, The Limit Will Be Reset Every 00:00 AM_*.',
+//SOON
+global.limitawal = {
+    premium: "Infinity",
+    monayawal: 0,
+    free: 100
+}
+//RPG LIMIT
+global.buruan = {
+   ikan: 5,
+   ayam: 5,
+   kelinci: 5,
+   domba: 5,
+   sapi: 5,
+   gajah: 5
+}
+global.rpg = {
+   darahawal: 100,
+   energyawal: 252,
+   besiawal: 5,
+   goldawal: 1,
+   emeraldawal: 1,
+   umpanawal: 1,
+   potionawal: 1
+}
+
+//AUTO FUNCTIONER DONT CHANGE IT
+global.antilink = false; //Global Auto Antilink
+global.antilinkremove = false; //Global Auto Antilink Remove
+global.antilinkwarn = false; //Global Auto Antilink warnings
+global.antibot = false; //Global Auto Antibot
+global.autoTyping = false; //Global auto typing
+global.autoRecord = false; //Global auto recording
+global.autoViewStatus = false; //Global Auto Statusview
+global.autoStatusDownload = false; //Global Auto status download
+global.autoviewreactstatus = true; //Global Auto Status react
+global.autobio = false; //Global Auto bio
+global.welcome = false; //Global Auto welcome in Group
+global.unavailable = false; //Global Auto unavailable
+global.available = false; //Global Auto available
+global.autoreadmessages = false; //Global Auto Read
+global.chatbot = false; //Global Auto chatbot
+global.autoreact = false; //Global Auto react message
+global.prefix = '.'; //Global Auto prefix
+global.commands = "1000+"; //Global All commands
+global.version = "V1"; //Global Auto version bot
+
+//DONT CHANGE IT IS API KEY
+global.api = {
+    screenshotapi: 'd539a7b1cd55ebccba702c2a0f96eff9',
+    fgmods: 'm2XBbNvz',
+    screenshotapiv2: '054b4800d6664f8fb79e63e419b3c834',
+    removebg: '829301093',
 };
 
 //—————「 RUNNING 」—————//
