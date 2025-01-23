@@ -31,6 +31,8 @@ global.prefix = process.env.PREFIX
 global.commands = process.env.ALL_CMD
 global.version = process.env.VERISION
 global.sudoUsers = process.env.SUDO_USERS.split(',').map(user => `${user}@s.whatsapp.net`);
+//database 
+global.urldb = ''; // just leave it blank but if you want to use the mongo database, fill in the mongo url
 //GLOBAL MESS
 global.mess = {
     success: process.env.MESSAGE_SUCCESS || '𝙳𝚘𝚗𝚎',
